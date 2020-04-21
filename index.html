@@ -1,11 +1,105 @@
-<html>
-    <head><title>App Over The Air</title></head>
-    <body>
-        <h1 onclick="click1()">Install 2App</h1>
-   </body>
-   <script>
-       function click1(){
-           window.open("itms-services://?action=download-manifest&url=https%3A%2F%2Fdownload.bq04.com%2Fapps%2F%3A5e6ad23123389f20a32d0383%2Finstall%3Fdownload_token%3D4164d21c79e5cc14992a13c4d2c333c3", "_blank")
-       }
-   </script>
-   </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTA</title>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        function upload(){
+            $.post("http://api.bq04.com/apps",{
+                type: 'ios',
+                bundle_id: $("#bundleId").val(),
+                api_token: 'ea0e4ba72626942f3084d2247e6235cc'
+            },(data) => {
+                console.log(data)
+    
+                var formData = new FormData();
+
+                formData.append('file', $('#ipa')[0].files[0]);
+                formData.append('key', data.cert.binary.key);
+                formData.append('token', data.cert.binary.token);
+                formData.append('x:name', $("#name").val() || 'ktb-app');
+                formData.append('x:version', $("#version").val() || '1.0.0');
+                formData.append('x:build', $("#build").val() || '1');
+                formData.append('x:release_type', 'Adhoc');
+                formData.append('x:changelog', 'first');
+
+                $.ajax({
+                url: data.cert.binary.upload_url,
+                type: "POST",
+                data: formData,
+                contentType: false,
+	            processData: false,
+                dataType: "json",
+                success: function(data){
+                    console.log(data)
+                }})
+    
+            });
+        }
+
+        function generateDownloadButton(){
+            $.get("http://api.bq04.com/apps?api_token=ea0e4ba72626942f3084d2247e6235cc",(data) => {
+                for (let index = 0; index < data.items.length; index++) {
+                    const element = data.items[index];
+                    if (element.bundle_id == $("#bundleId").val().trim()) {
+                        
+                        $.get(`http://api.bq04.com/apps/${element.id}/download_token?api_token=ea0e4ba72626942f3084d2247e6235cc`,(data) =>{
+
+                            let href = `itms-services://?action=download-manifest&url=https%3A%2F%2Fdownload.bq04.com%2Fapps%2F${element.id}%2Finstall%3Fdownload_token%3D${data['download_token']}`
+                            $("body").remove("#download")
+
+                            let a = $(`<a id='download' href='${href}'>download on iphone</a>`)
+                            
+                            $("body").append(a)
+                            // $("body").append(href)
+
+                            window.open(href, "_blank")
+                        })
+
+                        break;
+                    }
+                    
+                }
+            })
+        }
+    </script>
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input:not([type='button']):not([type='file']){
+            margin: 5px;
+            width: 300px;
+            height: 32px;
+            /* border: 0; */
+            border: 1px solid gray;
+        }
+        input[type=button]{
+            width: 200px;
+            background-color: lightgreen;
+        }
+    </style>
+</head>
+<body>
+<hr width="100%"/>
+<h1>OPERATE ON MAC</h1>
+<input type="text" id="bundleId" value="com.pracharath.merchant-uat1" placeholder="bundleId"/> <br/>
+<input type="file" id="ipa" placeholder="app ipa file"/><br/>
+<input id="name" value="paotang" placeholder="app name"><br/>
+<input id="version" value="1.0.0" placeholder="app version"><br/>
+<input id="build" value="1" placeholder="app build No."><br/>
+<input type="button" value="upload" onclick="upload()">
+<hr width="100%"/>
+<h1>OPERATE ON IPHONE</h1>
+<input type="button" value="show download link" onclick="generateDownloadButton()">
+
+
+
+
+
+</body>
+</html>
