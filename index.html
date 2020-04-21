@@ -7,7 +7,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script>
         function upload(){
-            $.post("http://api.bq04.com/apps",{
+            $.post("https://api.bq04.com/apps",{
                 type: 'ios',
                 bundle_id: $("#bundleId").val(),
                 api_token: 'ea0e4ba72626942f3084d2247e6235cc'
@@ -40,12 +40,12 @@
         }
 
         function generateDownloadButton(){
-            $.get("http://api.bq04.com/apps?api_token=ea0e4ba72626942f3084d2247e6235cc",(data) => {
+            $.get("https://api.bq04.com/apps?api_token=ea0e4ba72626942f3084d2247e6235cc",(data) => {
                 for (let index = 0; index < data.items.length; index++) {
                     const element = data.items[index];
                     if (element.bundle_id == $("#bundleId").val().trim()) {
                         
-                        $.get(`http://api.bq04.com/apps/${element.id}/download_token?api_token=ea0e4ba72626942f3084d2247e6235cc`,(data) =>{
+                        $.get(`https://api.bq04.com/apps/${element.id}/download_token?api_token=ea0e4ba72626942f3084d2247e6235cc`,(data) =>{
 
                             let href = `itms-services://?action=download-manifest&url=https%3A%2F%2Fdownload.bq04.com%2Fapps%2F${element.id}%2Finstall%3Fdownload_token%3D${data['download_token']}`
                             $("body").remove("#download")
