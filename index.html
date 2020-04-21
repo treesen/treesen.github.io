@@ -7,6 +7,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script>
         function upload(){
+            $("#upload").attr({"disabled": true, value:'......uploading!!!'}).css({color: "black"})
             $.post("https://api.bq04.com/apps",{
                 type: 'ios',
                 bundle_id: $("#bundleId").val(),
@@ -26,15 +27,20 @@
                 formData.append('x:changelog', 'first');
 
                 $.ajax({
-                url: data.cert.binary.upload_url,
-                type: "POST",
-                data: formData,
-                contentType: false,
-	            processData: false,
-                dataType: "json",
-                success: function(data){
-                    console.log(data)
-                }})
+                    url: data.cert.binary.upload_url,
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    dataType: "json",
+                    success: function(data){
+                        $("#upload").attr({"disabled": false, value:'upload successfully!'}).css({color: "white"})
+                        console.log(data)
+                    },
+                    error: function(data){
+                        $("#upload").attr({"disabled": false, value:'upload failed!'}).css({color: "red"})
+                    }
+                })
     
             });
         }
@@ -93,7 +99,7 @@
 <input id="name" value="paotang" placeholder="app name"><br/>
 <input id="version" value="1.0.0" placeholder="app version"><br/>
 <input id="build" value="1" placeholder="app build No."><br/>
-<input type="button" value="upload" onclick="upload()">
+<input type="button" value="upload" onclick="upload()" id="upload">
 <hr width="100%"/>
 <h1>OPERATE ON IPHONE</h1>
 <input type="button" value="show download link" onclick="generateDownloadButton()">
