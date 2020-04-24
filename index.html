@@ -70,11 +70,33 @@
                 }
             })
         }
+
+    $(function(){
+        if( /iphone|ipad/i.test(navigator.userAgent.toLocaleLowerCase()) ) {
+            $("#mac").hide();
+            $("#iphone").show();
+        }else{
+            $("#mac").show();
+            $("#iphone").hide();
+        } 
+    });
     </script>
     <style>
+        html{
+            min-height: 100%;
+        }
         body{
+            height: 100%;
+            width: 100%;
             display: flex;
             flex-direction: column;
+            align-items: center;
+        }
+        #mac,#iphone{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
         }
         input:not([type='button']):not([type='file']){
@@ -88,25 +110,26 @@
             width: 200px;
             background-color: lightgreen;
         }
+        a{
+            margin: 40px;
+        }
     </style>
 </head>
 <body>
-<hr width="100%"/>
-<h1>OPERATE ON MAC</h1>
-<!-- <input type="text" id="bundleId" value="com.pracharath.merchant-uat1" placeholder="bundleId"/> <br/> -->
-<input type="text" id="bundleId" value="com.ktb.dbp.uat" placeholder="bundleId"/> <br/>
-<input type="file" id="ipa" placeholder="app ipa file"/><br/>
-<input id="name" value="paotang" placeholder="app name"><br/>
-<input id="version" value="1.0.0" placeholder="app version"><br/>
-<input id="build" value="1" placeholder="app build No."><br/>
-<input type="button" value="upload" onclick="upload()" id="upload">
-<hr width="100%"/>
-<h1>OPERATE ON IPHONE</h1>
-<input type="button" value="show download link" onclick="generateDownloadButton()">
-
-
-
-
+<div id="mac">
+    <h1>UPLOAD IPA FILE</h1>
+    <!-- <input type="text" id="bundleId" value="com.pracharath.merchant-uat1" placeholder="bundleId"/> <br/> -->
+    <input type="text" id="bundleId" value="com.ktb.dbp.uat" placeholder="bundleId"/> <br/>
+    <input type="file" id="ipa" placeholder="app ipa file"/><br/>
+    <input id="name" value="paotang" placeholder="app name"><br/>
+    <input id="version" value="1.0.0" placeholder="app version"><br/>
+    <input id="build" value="1" placeholder="app build No."><br/>
+    <input type="button" value="upload" onclick="upload()" id="upload">
+</div>
+<div id="iphone">
+    <h1>DOWNLOAD APP</h1>
+    <input type="button" value="Show download link" onclick="generateDownloadButton()">
+</div>
 
 </body>
 </html>
