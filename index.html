@@ -72,13 +72,15 @@
         }
 
     $(function(){
-        if( /iphone|ipad/i.test(navigator.userAgent.toLocaleLowerCase()) ) {
+        if( /iphone|ipad/i.test(navigator.userAgent) ) {
             $("#mac").hide();
             $("#iphone").show();
         }else{
             $("#mac").show();
             $("#iphone").hide();
         } 
+        alert(/iphone|ipad/i.test(navigator.userAgent))
+        alert(navigator.userAgent)
     });
     </script>
     <style>
