@@ -46,11 +46,13 @@
         }
 
         function generateDownloadButton(){
+            let bundleId = $("#bundleId_download").val().trim() || $("#bundleId").val().trim()
+            let success = false
             $.get("https://api.bq04.com/apps?api_token=ea0e4ba72626942f3084d2247e6235cc",(data) => {
                 for (let index = 0; index < data.items.length; index++) {
                     const element = data.items[index];
-                    if (element.bundle_id == $("#bundleId").val().trim()) {
-                        
+                    if (element.bundle_id == bundleId) {
+                        success = true
                         $.get(`https://api.bq04.com/apps/${element.id}/download_token?api_token=ea0e4ba72626942f3084d2247e6235cc`,(data) =>{
 
                             let href = `itms-services://?action=download-manifest&url=https%3A%2F%2Fdownload.bq04.com%2Fapps%2F${element.id}%2Finstall%3Fdownload_token%3D${data['download_token']}`
@@ -60,13 +62,17 @@
                             
                             $("body").append(a)
                             // $("body").append(href)
-
+                            
                             window.open(href, "_blank")
                         })
 
                         break;
                     }
                     
+                }
+
+                if (!success) {
+                    alert("no apps found!")
                 }
             })
         }
@@ -122,7 +128,7 @@
     <h1>UPLOAD IPA FILE</h1>
     <!-- <input type="text" id="bundleId" value="com.pracharath.merchant-uat1" placeholder="bundleId"/> <br/> -->
     <input type="text" id="bundleId" value="com.ktb.dbp.uat" placeholder="bundleId"/> <br/>
-    <input type="file" id="ipa" placeholder="app ipa file"/><br/>
+    <input type="file" id="ipa" placeholder="app ipa file" accept=".ipa"/><br/>
     <input id="name" value="paotang" placeholder="app name"><br/>
     <input id="version" value="1.0.0" placeholder="app version"><br/>
     <input id="build" value="1" placeholder="app build No."><br/>
@@ -130,6 +136,7 @@
 </div>
 <div id="iphone">
     <h1>DOWNLOAD APP</h1>
+    <input type="text" id="bundleId_download" value="com.ktb.dbp.uat" placeholder="bundleId"/> <br/>
     <input type="button" value="Show download link" onclick="generateDownloadButton()">
 </div>
 
